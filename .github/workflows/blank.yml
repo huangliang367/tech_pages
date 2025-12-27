@@ -32,6 +32,9 @@ jobs:
       - name: Install vitepress
         run: npm install -D vitepress
   
+      - name: Install nvm
+        run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ~/.bashrc
+
       - name: Install node 20
         run: nvm install 20 && nvm use 20
         
