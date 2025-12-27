@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  base: '/tech_pages/',
   title: "Technology documents",
   description: "Technology documents",
   themeConfig: {
