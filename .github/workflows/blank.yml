@@ -31,7 +31,10 @@ jobs:
       
       - name: Install vitepress
         run: npm install -D vitepress
-
+  
+      - name: Install node 20
+        run: nvm install 20 && nvm use 20
+        
       - name: Build
         run: npm run docs:build
 
