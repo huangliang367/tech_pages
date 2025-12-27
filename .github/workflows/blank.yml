@@ -26,6 +26,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: pwd
+        run: pwd
+        
       - name: Install dependencies
         run: npm install
 
