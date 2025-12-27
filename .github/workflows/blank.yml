@@ -25,18 +25,17 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
+      - name: setup node.jobs
+        uses: actions/checkout@v4
+        with:
+          node-version: 20
+
       # Runs a single command using the runners shell
       - name: Install npm
         run: npm install
       
       - name: Install vitepress
         run: npm install -D vitepress
-  
-      - name: Install nvm
-        run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && source ~/.bashrc
-
-      - name: Install node 20
-        run: nvm install 20 && nvm use 20
         
       - name: Build
         run: npm run docs:build
