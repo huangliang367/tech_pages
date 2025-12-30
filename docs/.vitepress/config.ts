@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { vitepressPluginLegend } from 'vitepress-plugin-legend'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -37,5 +38,13 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
     ]
+  },
+  markdown: {
+    config(md) {
+      vitepressPluginLegend(md, {
+        markmap: { showToolbar: true }, // 启用脑图工具栏（可选）
+        mermaid: true // 启用Mermaid图表
+      })
+    }
   }
 })
