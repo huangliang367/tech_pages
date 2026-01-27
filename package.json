@@ -1,6 +1,8 @@
 {
   "type": "module",
   "scripts": {
+    "predocs:build": "bash scripts/render-plantuml.sh",
+    "predocs:dev": "bash scripts/render-plantuml.sh",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"

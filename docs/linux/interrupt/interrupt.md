@@ -140,17 +140,47 @@ BUG()
 - el1h_64_irq
 
 函数调用流程：
+![el1h_64_irq](../../public/plantuml/el1h_64_irq.svg "el1h_64_irq")
 
-```mermaid
-sequenceDiagram
-  A->>B: Hello
-  B-->>A: Hi
+```c
+/*
+ * This struct defines the way the registers are stored on the stack during an
+ * exception. Note that sizeof(struct pt_regs) has to be a multiple of 16 (for
+ * stack alignment). struct user_pt_regs must form a prefix of struct pt_regs.
+ */
+struct pt_regs {
+ union {
+  struct user_pt_regs user_regs;
+  struct {
+   u64 regs[31];
+   u64 sp;
+   u64 pc;
+   u64 pstate;
+  };
+ };
+ u64 orig_x0;
+#ifdef __AARCH64EB__
+ u32 unused2;
+ s32 syscallno;
+#else
+ s32 syscallno;
+ u32 unused2;
+#endif
+ u64 sdei_ttbr1;
+ /* Only valid when ARM64_HAS_GIC_PRIO_MASKING is enabled. */
+ u64 pmr_save;
+ u64 stackframe[2];
+
+ /* Only valid for some EL1 exceptions. */
+ u64 lockdep_hardirqs;
+ u64 exit_rcu;
+};
 ```
 
 ```c
 asmlinkage void noinstr el1h_64_irq_handler(struct pt_regs *regs)
 {
- el1_interrupt(regs, handle_arch_irq);
+  el1_interrupt(regs, handle_arch_irq);
 }
 
 static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
@@ -165,3 +195,53 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
 - el0t_64_irq
 
 - el0t_32_irq
+
+## Linux Kernel中断初始化
+
+本节分析Linux Kernel软件层面初始化中断流程。
+
+```c
+void __init init_IRQ(void)
+{
+	init_irq_stacks();
+	init_irq_scs();
+	irqchip_init();
+
+	if (system_uses_irq_prio_masking()) {
+		/*
+		 * Now that we have a stack for our IRQ handler, set
+		 * the PMR/PSR pair to a consistent state.
+		 */
+		WARN_ON(read_sysreg(daif) & PSR_A_BIT);
+		local_daif_restore(DAIF_PROCCTX_NOIRQ);
+	}
+}
+
+IRQCHIP_DECLARE(gic_v3, "arm,gic-v3", gic_of_init);
+
+#define IRQCHIP_DECLARE(name, compat, fn)	\
+	OF_DECLARE_2(irqchip, name, compat, typecheck_irq_init_cb(fn))
+
+#define OF_DECLARE_2(table, name, compat, fn) \
+		_OF_DECLARE(table, name, compat, fn, of_init_fn_2)
+
+#define _OF_DECLARE(table, name, compat, fn, fn_type)			\
+	static const struct of_device_id __of_table_##name		\
+		__used __section("__" #table "_of_table")		\
+		__aligned(__alignof__(struct of_device_id))		\
+		 = { .compatible = compat,				\
+		     .data = (fn == (fn_type)NULL) ? fn : fn  }
+```
+
+- 
+
+## 中断注册流程
+
+```c
+static inline int __must_check
+request_irq(unsigned int irq, irq_handler_t handler, unsigned long flags,
+	    const char *name, void *dev)
+{
+	return request_threaded_irq(irq, handler, NULL, flags, name, dev);
+}
+```

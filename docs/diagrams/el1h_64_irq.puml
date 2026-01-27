@@ -1,0 +1,17 @@
+@startuml el1h_64_irq
+skinparam monochrome true
+skinparam dpi 150
+skinparam defaultFontName Monospace
+:el1h_64_irq;
+:el1h_64_irq_handler;
+:el1_interrupt;
+if (nim, intc enable?) then (yes)
+    :__el1_irq;
+    :irq_enter_rcu;
+    :do_interrupt_handler;
+    :irq_exit_rcu;
+else (no)
+    :el1_pnmi;
+endif
+    :ret_to_kernel;
+@enduml
