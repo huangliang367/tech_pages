@@ -9,11 +9,12 @@ npm install -g markdownlint-cli2
 markdownlint-cli2 "**/*.md" --fix
 ```
 
-## mermaid
+## 环境问题
 
-Mermaid语法简介。<https://mermaid.js.org/syntax/flowchart.html>
-
-###
-
-###
+1. vitepress not found
+ 执行命令安装vitepress，版本需一致
+ 
+ ```text
+ npm install vitepress@1.6.4
+ ```
 
