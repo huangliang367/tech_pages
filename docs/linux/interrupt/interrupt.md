@@ -140,7 +140,10 @@ BUG()
 - el1h_64_irq
 
 函数调用流程：
-![el1h_64_irq](../../public/plantuml/el1h_64_irq.svg "el1h_64_irq")
+<figure>
+<img src="../../public/plantuml/el1h_64_irq.svg" alt="el1h_64_irq" style="display:block; margin:auto">
+<figcaption style="text-align:center">el1h_64_irq</figcaption>
+</figure>
 
 ```c
 /*
