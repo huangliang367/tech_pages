@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as a}from"./chunks/framework.CYkd4r84.js";const l=JSON.parse('{"title":"","description":"","frontmatter":{"redirect":"/arm/exception_level/el"},"headers":[],"relativePath":"index.md","filePath":"index.md"}'),r={name:"index.md"};function n(o,c,i,s,d,p){return a(),t("div")}const m=e(r,[["render",n]]);export{l as __pageData,m as default};
